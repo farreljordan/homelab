@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  searxng:
+    image: searxng/searxng
+    container_name: searxng
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.searxng.entrypoints=websecure"
+      - "traefik.http.routers.searxng.rule=Host(`searx.farreljordan.com`)"
+      - "traefik.http.routers.searxng.tls=true"
+      - "traefik.http.routers.searxng.tls.certresolver=production"
+    networks:
+      - traefik_default
+    volumes:
+      - "./searxng:/etc/searxng"  # Mount the current directory's searxng folder
+    environment:
+#      - BASE_URL=http://localhost:80/  # Set base URL
+      - INSTANCE_NAME=searxng  # Set instance name
+    restart: unless-stopped  # Ensure the container restarts if it fails
+
+networks:
+  traefik_default:
+    external: true
